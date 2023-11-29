@@ -5,25 +5,36 @@ const removeTask = e => {
 	e.target.closest(".task").remove();
 }
 
-const addTask = e => {
-	tasksList.innerHTML +=
-		`<div class="task">
-      <div class="task__title">
-        ${inputBox.value}
-      </div>
-      <a href="#" class="task__remove">&times;</a>
-    </div>`;
+const addTask = () => {
+	tasksList.insertAdjacentHTML("afterbegin", `
+		<div class="task">
+			<div class="task__title">
+				${inputBox.value}
+			</div>
+			<a href="#" class="task__remove">&times;</a>
+		</div>`
+		)
+		inputBox.value = "";
 
-	inputBox.value = "";
+	tasksList.addEventListener("click", e => {
+		if (e.target.classList.contains("task__remove")) {
+		e.target.parentElement.remove();
+		}
+});
 
-  [...(tasksList.getElementsByClassName("task__remove"))].forEach(element => {
-		element.addEventListener("click", removeTask)
-	});
+	[...(tasksList.getElementsByClassName("task__remove"))].forEach(element => {
+			element.addEventListener("click", removeTask)
+		});
 
-	e.preventDefault();
+		e.preventDefault();	
 }
 
-document.getElementById("tasks__add").addEventListener("click", addTask);
-inputBox.addEventListener("keypress", e => {
-	if (e.keyCode == 13) addTask(e);
-});
+let tasksAdd = document.getElementById("tasks__add");
+let tasksAddButton = () => {tasksAdd.addEventListener("click", e => {
+    e.preventDefault();
+		if (inputBox.value.trim().length > 0) {
+			addTask() 
+		}
+	})
+}
+tasksAddButton();
